@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="Motion" Id="{ca457355-2e6c-4c44-90e9-8aa1f04d5f52}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'to_string'}
+PROGRAM Motion
+VAR
+	// Digital inputs (Start/stop)
+	iStartButton AT %I* : BOOL;
+	iStopButton AT %I* 	: BOOL;
+	
+	bStartButton : BOOL;
+	bStopButton : BOOL;
+	
+	bNone : BOOL;
+	bV310 : BOOL;
+	bV320 : BOOL;
+
+	// Axis
+	Axis1 : AXIS_REF;
+	
+	McPower : MC_Power;
+	McReset : MC_Reset;
+	McJogging : MC_Jog;
+	McVelocity : MC_MoveVelocity;
+	McStop : MC_Stop;
+	MaxVelocity : LREAL;
+	SetVelocity : LREAL;
+	OverrideVelocity : LREAL;
+	
+	// States
+	eMotionState : (Initial, StartDriveReset, WaitForDriveReset, DriveReady, StartMotor, StopMotor, Error);
+	sMotionState : STRING;
+	
+	eSelectedDrillingheadType : (ToNone, None, ToV310, V310, ToV320, V320);
+	sSelectedDrillingheadType : STRING;
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//CurrentVelocityCmd := 1000.0;
+
+MaxVelocity := 4000.0;
+OverrideVelocity := SetVelocity/MaxVelocity * 100;
+
+Axis1.ReadStatus();
+
+//  Override := OverrideVelocity
+McPower(Axis := Axis1, Enable := TRUE, Enable_Positive := TRUE, Enable_Negative := TRUE, Override := OverrideVelocity);
+McReset(Axis := Axis1);
+McJogging(Axis := Axis1);
+
+// Motor state
+FB_ToStringMotionState(_eMotionState := eMotionState,
+						_sMotionState := sMotionState);
+
+CASE eMotionState OF
+	Initial:
+		eMotionState := StartDriveReset;
+		McReset(Axis := Axis1,Execute := FALSE);
+	
+	StartDriveReset:
+		McReset(Axis := Axis1,Execute := TRUE);
+		IF McReset.Done THEN
+			eMotionState := WaitForDriveReset;
+		ELSIF McReset.Error THEN
+			eMotionState := Error;
+		END_IF
+	
+	WaitForDriveReset:
+		McReset(Axis := Axis1,Execute := FALSE);
+		IF McPower.Status THEN
+			eMotionState := DriveReady;
+		END_IF
+	
+	DriveReady:
+		IF bStartButton THEN
+			eMotionState := StartMotor;
+		END_IF
+		
+	StartMotor:
+		McVelocity(Axis:=Axis1,
+				Velocity:=MaxVelocity,
+				Acceleration:=10000,
+				Deceleration:=10000,
+				Jerk:=100000,
+				Direction:=MC_Direction.MC_Positive_Direction,
+				Execute:=TRUE);
+		
+		IF bStopButton THEN
+			McVelocity(Axis:=Axis1, Execute:=FALSE);
+			eMotionState := StopMotor;
+		END_IF
+		
+	StopMotor:
+		McStop(Axis:=Axis1, Execute:=TRUE);
+		
+		IF bStartButton THEN
+			McStop(Axis:=Axis1, Execute:=FALSE);
+			eMotionState := StartMotor;
+		END_IF
+		
+	Error:
+		McReset(Axis := Axis1,Execute := FALSE);
+		eMotionState := Initial;
+	
+END_CASE
+
+
+// Drilling head selection
+FB_ToStringSelectedDrillingheadType(_eSelectedDrillingheadType := eSelectedDrillingheadType,
+									_sSelectedDrillingheadType := sSelectedDrillingheadType);
+
+IF Axis1.Status.HasBeenStopped THEN
+	IF bNone THEN
+		eSelectedDrillingheadType := ToNone;
+	
+	ELSIF bV310 THEN
+		eSelectedDrillingheadType := ToV310;
+		
+	ELSIF bV320 THEN
+		eSelectedDrillingheadType := ToV320;
+	
+	END_IF
+END_IF
+
+									
+									
+									
+									
+
+									
+									
+CASE eSelectedDrillingHeadType OF
+	ToNone:
+	
+	
+	None:
+	
+	
+	ToV310:
+	
+	
+	V310:
+	
+	
+	ToV320:
+	
+	
+	V320:
+	
+	
+END_CASE
+
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

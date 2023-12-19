@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="TestFB_EcSetSlaveState" Id="{429f4b69-03f5-4b0d-a675-5fbb9e9430a4}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM TestFB_EcSetSlaveState
+VAR
+	fbEcSetSlaveState 	: FB_EcSetSlaveState;
+	sNetId          	: T_AmsNetId:= '10.100.6.93.3.1';
+	nSlaveAddr      	: UINT := 1006;
+	bExecute        	: BOOL;
+	tTimeout   			: TIME := T#10S;
+	reqState   			: WORD;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbEcSetSlaveState(
+				sNetId:= sNetId, 
+				nSlaveAddr:= nSlaveAddr, 
+				bExecute:= bExecute, 
+				tTimeout:= tTimeout, 
+				reqState:= reqState, 
+				bBusy=> , 
+				bError=> , 
+				nErrId=> , 
+				currState=> );]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

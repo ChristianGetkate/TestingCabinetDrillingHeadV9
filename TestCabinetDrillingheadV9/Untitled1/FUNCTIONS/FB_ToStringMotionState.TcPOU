@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ToStringMotionState" Id="{9a63864a-e8b4-41ab-8b2b-91ae06567c05}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION FB_ToStringMotionState
+VAR_INPUT
+	_eMotionState : INT;
+	_sMotionState : REFERENCE TO STRING;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF _eMotionState = 0 THEN
+	_sMotionState := 'Initial';
+	
+ELSIF _eMotionState = 1 THEN
+	_sMotionState := 'StartDriveReset';
+	
+ELSIF _eMotionState = 2 THEN
+	_sMotionState := 'WaitForDriveReset';
+	
+ELSIF _eMotionState = 3 THEN
+	_sMotionState := 'DriveReady';
+	
+ELSIF _eMotionState = 4 THEN
+	_sMotionState := 'StartMotor';
+	
+ELSIF _eMotionState = 5 THEN
+	_sMotionState := 'StopMotor';
+
+ELSIF _eMotionState = 6 THEN
+	_sMotionState := 'Error';		
+
+END_IF]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

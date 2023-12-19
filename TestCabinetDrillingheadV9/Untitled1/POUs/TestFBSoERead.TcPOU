@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="TestFBSoERead" Id="{db45dcac-000a-40e4-ad29-12b0b6bb7644}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM TestFBSoERead
+VAR
+	fbSoERead : FB_SoERead;
+	nTorqueLimit : UINT;
+	
+	bExecute : BOOL;
+	stFeedbackOneType : ST_FeedbackOneType;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+
+
+fbSoERead(
+		Axis:= Motion.Axis1, 
+		NetId:= '10.100.6.93.1.1', 
+		Idn:= P_0_IDNs+150, 
+		Element:= 16#40, 
+		pDstBuf:= ADR(stFeedbackOneType), 
+		BufLen:= SIZEOF(stFeedbackOneType), 
+		Execute:= bExecute, 
+		Timeout:= , 
+		Busy=> , 
+		Error=> , 
+		AdsErrId=> , 
+		SercosErrId=> , 
+		Attribute=> );]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

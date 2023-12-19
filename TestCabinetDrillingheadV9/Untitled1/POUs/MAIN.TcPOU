@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{824641ee-3aee-48e3-9beb-798164a31f45}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Safety.bSafetyRestart 		:= IO.bInAckSignal;
+//Safety.bSafetyErrorAck 		:= IO.bInAckSignal;
+//Safety.bAXSafetyErrorAck 	:= IO.bInAckSignal;
+//Safety.bSafetyRun 			:= TRUE;
+
+Motion();
+Toolchanger();
+//TestfbSoEWrite();
+//TestFBSoERead();
+//TestFB_EcSetSlaveState();]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

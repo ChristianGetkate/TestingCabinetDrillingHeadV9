@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="TestfbSoEWrite" Id="{1fe0071d-fd39-4fc0-896e-8231765b6dc1}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM TestfbSoEWrite
+VAR
+	fbSoEWrite : FB_SoEWrite;
+	nTorqueLimit : UINT := 980;
+	
+	bExecute : BOOL;
+	stFeedbackOneType : ST_FeedbackOneType;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+stFeedbackOneType.Manufacturer := E_Manufacturer.Hengstler;
+
+fbSoEWrite(
+	Axis:= Motion.Axis1, 
+	NetId:= '10.100.6.93.1.1', 
+	Idn:= S_0_IDNs+150, 
+	Element:= 16#40, 
+	pSrcBuf:= ADR(stFeedbackOneType), 
+	BufLen:= SIZEOF(stFeedbackOneType), 
+	Execute:= bExecute, 
+	Timeout:= , 
+	Password:= , 
+	Busy=> , 
+	Error=> , 
+	AdsErrId=> , 
+	SercosErrId=> );]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
